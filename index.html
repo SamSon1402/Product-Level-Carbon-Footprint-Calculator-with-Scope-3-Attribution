@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonLens AI | BCG X Climate Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00E676;
+            --primary-dark: #00C853;
+            --primary-light: #69F0AE;
+            --glow: rgba(0, 230, 118, 0.35);
+            --glow-subtle: rgba(0, 230, 118, 0.15);
+            --bg-dark: #0D1117;
+            --bg-surface: #161B22;
+            --bg-card: #21262D;
+            --bg-elevated: #2D333B;
+            --border: rgba(0, 230, 118, 0.12);
+            --border-active: rgba(0, 230, 118, 0.4);
+            --text-white: #F0F6FC;
+            --text-gray: #8B949E;
+            --text-muted: #484F58;
+            --scope1: #00E676;
+            --scope2: #40C4FF;
+            --scope3: #FF9100;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            min-height: 100vh;
+        }
+
+        /* Background */
+        .bg-mesh {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 0% 0%, rgba(0, 230, 118, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(0, 200, 83, 0.08) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        /* Layout */
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 72px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+            gap: 8px;
+        }
+
+        .sidebar-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 30px var(--glow);
+        }
+
+        .sidebar-btn {
+            width: 48px;
+            height: 48px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            color: var(--text-gray);
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-btn:hover {
+            background: var(--bg-card);
+            color: var(--text-white);
+        }
+
+        .sidebar-btn.active {
+            background: rgba(0, 230, 118, 0.1);
+            border-color: var(--border);
+            color: var(--primary);
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .topbar {
+            height: 72px;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .topbar-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .topbar-title h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .topbar-title span {
+            color: var(--primary);
+        }
+
+        .topbar-badge {
+            padding: 6px 14px;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg-dark);
+            box-shadow: 0 8px 25px var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px var(--glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-white);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* Calculator Grid */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 32px;
+            height: 100%;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-title-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 230, 118, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 28px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--glow-subtle);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-white);
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238B949E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            transition: all 0.3s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Supply Chain Tags */
+        .supply-chain-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            min-height: 100px;
+        }
+
+        .supply-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .supply-tag-flag {
+            font-size: 16px;
+        }
+
+        .supply-tag-remove {
+            width: 18px;
+            height: 18px;
+            background: var(--bg-elevated);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-gray);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .supply-tag-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+
+        .add-supply-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px dashed var(--border);
+            border-radius: 100px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-supply-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            border-style: solid;
+        }
+
+        /* Scope Checkboxes */
+        .scope-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .scope-option {
+            flex: 1;
+            padding: 14px;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .scope-option:hover {
+            border-color: var(--border-active);
+        }
+
+        .scope-option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 230, 118, 0.05);
+        }
+
+        .scope-option input {
+            display: none;
+        }
+
+        .scope-option-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .scope-option-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .scope-option[data-scope="1"] .scope-option-label { color: var(--scope1); }
+        .scope-option[data-scope="2"] .scope-option-label { color: var(--scope2); }
+        .scope-option[data-scope="3"] .scope-option-label { color: var(--scope3); }
+
+        /* Results Panel */
+        .results-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Total Emissions Card */
+        .emissions-hero {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0, 230, 118, 0.05) 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .emissions-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            filter: blur(60px);
+            z-index: 0;
+        }
+
+        .emissions-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .emissions-label {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 12px;
+        }
+
+        .emissions-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .emissions-unit {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 24px;
+        }
+
+        .emissions-per-unit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--bg-elevated);
+            border-radius: 100px;
+            font-size: 14px;
+        }
+
+        .emissions-per-unit strong {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Scope Breakdown */
+        .scope-breakdown {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .scope-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scope-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .scope-card[data-scope="1"]::before { background: var(--scope1); }
+        .scope-card[data-scope="2"]::before { background: var(--scope2); }
+        .scope-card[data-scope="3"]::before { background: var(--scope3); }
+
+        .scope-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .scope-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-gray);
+        }
+
+        .scope-card-percent {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+
+        .scope-card[data-scope="1"] .scope-card-percent { background: rgba(0, 230, 118, 0.1); color: var(--scope1); }
+        .scope-card[data-scope="2"] .scope-card-percent { background: rgba(64, 196, 255, 0.1); color: var(--scope2); }
+        .scope-card[data-scope="3"] .scope-card-percent { background: rgba(255, 145, 0, 0.1); color: var(--scope3); }
+
+        .scope-card-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .scope-card[data-scope="1"] .scope-card-value { color: var(--scope1); }
+        .scope-card[data-scope="2"] .scope-card-value { color: var(--scope2); }
+        .scope-card[data-scope="3"] .scope-card-value { color: var(--scope3); }
+
+        .scope-card-unit {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Hotspots */
+        .hotspots-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .hotspots-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hotspot-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .hotspot-item:hover {
+            transform: translateX(8px);
+        }
+
+        .hotspot-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .hotspot-rank {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .hotspot-info {
+            flex: 1;
+        }
+
+        .hotspot-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .hotspot-category {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .hotspot-bar {
+            width: 100px;
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .hotspot-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 100px;
+            transition: width 1s ease;
+        }
+
+        .hotspot-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-white);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* Confidence Score */
+        .confidence-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .confidence-badge strong {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 400px;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .empty-state-desc {
+            font-size: 15px;
+            color: var(--text-gray);
+            max-width: 400px;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(13, 17, 23, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--bg-elevated);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-elevated);
+        }
+
+        .dropdown-item-flag {
+            font-size: 20px;
+        }
+
+        /* Result shown state */
+        .results-container {
+            display: none;
+        }
+
+        .results-container.show {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .scope-breakdown { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-mesh"></div>
+
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">🌍</div>
+            <button class="sidebar-btn active" title="Calculator">📊</button>
+            <button class="sidebar-btn" title="Products">📦</button>
+            <button class="sidebar-btn" title="Supply Chain">🔗</button>
+            <button class="sidebar-btn" title="Reports">📋</button>
+            <button class="sidebar-btn" title="Analytics">📈</button>
+            <div class="sidebar-spacer"></div>
+            <button class="sidebar-btn" title="Settings">⚙️</button>
+            <button class="sidebar-btn" title="Help">❓</button>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Carbon<span>Lens</span> AI</h1>
+                    <span class="topbar-badge">Product-Level Calculator</span>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-secondary" onclick="resetCalculator()">
+                        🔄 Reset
+                    </button>
+                    <button class="btn btn-primary" onclick="exportResults()">
+                        📥 Export Report
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="calculator-grid">
+                    <!-- Input Panel -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="card-title-icon">📝</div>
+                                Product Information
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form id="calculatorForm" onsubmit="calculateEmissions(event)">
+                                <div class="form-section">
+                                    <div class="form-section-title">Product Details</div>
+                                    <div class="form-group">
+                                        <label class="form-label">Product Name</label>
+                                        <input type="text" class="form-input" id="productName" placeholder="e.g., Organic Cotton T-Shirt" required>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Quantity</label>
+                                            <input type="number" class="form-input" id="quantity" placeholder="1000" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Unit</label>
+                                            <select class="form-select" id="unit" required>
+                                                <option value="units">Units</option>
+                                                <option value="kg">Kilograms</option>
+                                                <option value="tonnes">Tonnes</option>
+                                                <option value="liters">Liters</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Product Category</label>
+                                        <select class="form-select" id="category" required>
+                                            <option value="">Select category...</option>
+                                            <option value="textiles">Textiles & Apparel</option>
+                                            <option value="electronics">Electronics</option>
+                                            <option value="food">Food & Beverages</option>
+                                            <option value="chemicals">Chemicals</option>
+                                            <option value="automotive">Automotive Parts</option>
+                                            <option value="packaging">Packaging Materials</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="form-section-title">Supply Chain</div>
+                                    <div class="form-group">
+                                        <label class="form-label">Manufacturing Locations</label>
+                                        <div class="supply-chain-input" id="supplyChainTags">
+                                            <button type="button" class="add-supply-btn" onclick="showCountryDropdown()">+ Add Location</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <div class="form-section-title">Emission Scopes</div>
+                                    <div class="scope-options">
+                                        <label class="scope-option selected" data-scope="1">
+                                            <input type="checkbox" name="scope" value="1" checked>
+                                            <div class="scope-option-label">Scope 1</div>
+                                            <div class="scope-option-desc">Direct</div>
+                                        </label>
+                                        <label class="scope-option selected" data-scope="2">
+                                            <input type="checkbox" name="scope" value="2" checked>
+                                            <div class="scope-option-label">Scope 2</div>
+                                            <div class="scope-option-desc">Energy</div>
+                                        </label>
+                                        <label class="scope-option selected" data-scope="3">
+                                            <input type="checkbox" name="scope" value="3" checked>
+                                            <div class="scope-option-label">Scope 3</div>
+                                            <div class="scope-option-desc">Value Chain</div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 24px;">
+                                    ⚡ Calculate Emissions
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Results Panel -->
+                    <div class="results-panel">
+                        <!-- Empty State -->
+                        <div class="card empty-state-card" id="emptyState">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🌱</div>
+                                <h3 class="empty-state-title">Ready to Calculate</h3>
+                                <p class="empty-state-desc">Enter your product details and supply chain information to calculate the carbon footprint with AI-powered emission factor matching.</p>
+                            </div>
+                        </div>
+
+                        <!-- Results (hidden by default) -->
+                        <div class="results-container" id="resultsContainer">
+                            <!-- Hero Emissions -->
+                            <div class="emissions-hero">
+                                <div class="emissions-hero-content">
+                                    <div class="emissions-label">Total Product Carbon Footprint</div>
+                                    <div class="emissions-value" id="totalEmissions">7,850</div>
+                                    <div class="emissions-unit">kg CO₂e</div>
+                                    <div class="emissions-per-unit">
+                                        Per unit: <strong id="perUnitEmissions">7.85</strong> kg CO₂e
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Scope Breakdown -->
+                            <div class="scope-breakdown">
+                                <div class="scope-card" data-scope="1">
+                                    <div class="scope-card-header">
+                                        <div class="scope-card-title">Scope 1 (Direct)</div>
+                                        <div class="scope-card-percent" id="scope1Percent">0%</div>
+                                    </div>
+                                    <div class="scope-card-value" id="scope1Value">0</div>
+                                    <div class="scope-card-unit">kg CO₂e</div>
+                                </div>
+                                <div class="scope-card" data-scope="2">
+                                    <div class="scope-card-header">
+                                        <div class="scope-card-title">Scope 2 (Energy)</div>
+                                        <div class="scope-card-percent" id="scope2Percent">15.8%</div>
+                                    </div>
+                                    <div class="scope-card-value" id="scope2Value">1,240</div>
+                                    <div class="scope-card-unit">kg CO₂e</div>
+                                </div>
+                                <div class="scope-card" data-scope="3">
+                                    <div class="scope-card-header">
+                                        <div class="scope-card-title">Scope 3 (Value Chain)</div>
+                                        <div class="scope-card-percent" id="scope3Percent">84.2%</div>
+                                    </div>
+                                    <div class="scope-card-value" id="scope3Value">6,610</div>
+                                    <div class="scope-card-unit">kg CO₂e</div>
+                                </div>
+                            </div>
+
+                            <!-- Hotspots -->
+                            <div class="hotspots-card">
+                                <h3 class="hotspots-title">🔥 Emission Hotspots</h3>
+                                <div id="hotspotsList">
+                                    <div class="hotspot-item">
+                                        <div class="hotspot-rank">1</div>
+                                        <div class="hotspot-info">
+                                            <div class="hotspot-name">Raw Material Farming</div>
+                                            <div class="hotspot-category">Upstream • Agriculture</div>
+                                        </div>
+                                        <div class="hotspot-bar">
+                                            <div class="hotspot-bar-fill" style="width: 85%"></div>
+                                        </div>
+                                        <div class="hotspot-value">3,420 kg</div>
+                                    </div>
+                                    <div class="hotspot-item">
+                                        <div class="hotspot-rank">2</div>
+                                        <div class="hotspot-info">
+                                            <div class="hotspot-name">Ocean Freight</div>
+                                            <div class="hotspot-category">Transport • Shipping</div>
+                                        </div>
+                                        <div class="hotspot-bar">
+                                            <div class="hotspot-bar-fill" style="width: 62%"></div>
+                                        </div>
+                                        <div class="hotspot-value">2,480 kg</div>
+                                    </div>
+                                    <div class="hotspot-item">
+                                        <div class="hotspot-rank">3</div>
+                                        <div class="hotspot-info">
+                                            <div class="hotspot-name">Manufacturing Energy</div>
+                                            <div class="hotspot-category">Operations • Electricity</div>
+                                        </div>
+                                        <div class="hotspot-bar">
+                                            <div class="hotspot-bar-fill" style="width: 45%"></div>
+                                        </div>
+                                        <div class="hotspot-value">1,240 kg</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 20px; text-align: center;">
+                                    <span class="confidence-badge">
+                                        🎯 AI Confidence: <strong id="confidenceScore">94%</strong>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loading Overlay -->
+                        <div class="loading-overlay" id="loadingOverlay">
+                            <div class="loader"></div>
+                            <div class="loading-text">Matching emission factors with AI...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Countries data
+        const countries = [
+            { code: 'CN', name: 'China', flag: '🇨🇳' },
+            { code: 'IN', name: 'India', flag: '🇮🇳' },
+            { code: 'BD', name: 'Bangladesh', flag: '🇧🇩' },
+            { code: 'VN', name: 'Vietnam', flag: '🇻🇳' },
+            { code: 'DE', name: 'Germany', flag: '🇩🇪' },
+            { code: 'FR', name: 'France', flag: '🇫🇷' },
+            { code: 'US', name: 'United States', flag: '🇺🇸' },
+            { code: 'JP', name: 'Japan', flag: '🇯🇵' },
+            { code: 'KR', name: 'South Korea', flag: '🇰🇷' },
+            { code: 'TW', name: 'Taiwan', flag: '🇹🇼' },
+            { code: 'MX', name: 'Mexico', flag: '🇲🇽' },
+            { code: 'BR', name: 'Brazil', flag: '🇧🇷' }
+        ];
+
+        let selectedCountries = [];
+
+        // Scope option toggle
+        document.querySelectorAll('.scope-option').forEach(option => {
+            option.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                const checkbox = this.querySelector('input');
+                checkbox.checked = this.classList.contains('selected');
+            });
+        });
+
+        // Show country dropdown
+        function showCountryDropdown() {
+            const container = document.getElementById('supplyChainTags');
+            
+            // Check if dropdown already exists
+            let dropdown = container.querySelector('.dropdown-menu');
+            if (dropdown) {
+                dropdown.classList.toggle('show');
+                return;
+            }
+
+            // Create dropdown
+            dropdown = document.createElement('div');
+            dropdown.className = 'dropdown-menu show';
+            dropdown.style.position = 'relative';
+            dropdown.style.width = '100%';
+            dropdown.style.marginTop = '8px';
+
+            countries.forEach(country => {
+                if (!selectedCountries.includes(country.code)) {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.innerHTML = `
+                        <span class="dropdown-item-flag">${country.flag}</span>
+                        <span>${country.name}</span>
+                    `;
+                    item.onclick = () => addCountry(country);
+                    dropdown.appendChild(item);
+                }
+            });
+
+            container.appendChild(dropdown);
+        }
+
+        // Add country tag
+        function addCountry(country) {
+            if (selectedCountries.includes(country.code)) return;
+
+            selectedCountries.push(country.code);
+
+            const container = document.getElementById('supplyChainTags');
+            const tag = document.createElement('div');
+            tag.className = 'supply-tag';
+            tag.dataset.code = country.code;
+            tag.innerHTML = `
+                <span class="supply-tag-flag">${country.flag}</span>
+                <span>${country.name}</span>
+                <button type="button" class="supply-tag-remove" onclick="removeCountry('${country.code}')">&times;</button>
+            `;
+
+            const addBtn = container.querySelector('.add-supply-btn');
+            container.insertBefore(tag, addBtn);
+
+            // Remove dropdown
+            const dropdown = container.querySelector('.dropdown-menu');
+            if (dropdown) dropdown.remove();
+        }
+
+        // Remove country
+        function removeCountry(code) {
+            selectedCountries = selectedCountries.filter(c => c !== code);
+            const tag = document.querySelector(`.supply-tag[data-code="${code}"]`);
+            if (tag) tag.remove();
+        }
+
+        // Calculate emissions
+        function calculateEmissions(e) {
+            e.preventDefault();
+
+            const emptyState = document.getElementById('emptyState');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            emptyState.style.display = 'none';
+            loadingOverlay.classList.add('show');
+
+            setTimeout(() => {
+                loadingOverlay.classList.remove('show');
+
+                // Generate random realistic results
+                const quantity = parseInt(document.getElementById('quantity').value) || 1000;
+                const perUnit = (Math.random() * 15 + 3).toFixed(2);
+                const total = Math.round(perUnit * quantity);
+                const scope2 = Math.round(total * (Math.random() * 0.2 + 0.1));
+                const scope3 = total - scope2;
+                const scope2Percent = ((scope2 / total) * 100).toFixed(1);
+                const scope3Percent = ((scope3 / total) * 100).toFixed(1);
+
+                document.getElementById('totalEmissions').textContent = total.toLocaleString();
+                document.getElementById('perUnitEmissions').textContent = perUnit;
+                document.getElementById('scope1Value').textContent = '0';
+                document.getElementById('scope1Percent').textContent = '0%';
+                document.getElementById('scope2Value').textContent = scope2.toLocaleString();
+                document.getElementById('scope2Percent').textContent = scope2Percent + '%';
+                document.getElementById('scope3Value').textContent = scope3.toLocaleString();
+                document.getElementById('scope3Percent').textContent = scope3Percent + '%';
+                document.getElementById('confidenceScore').textContent = (Math.random() * 8 + 90).toFixed(0) + '%';
+
+                resultsContainer.classList.add('show');
+            }, 2500);
+        }
+
+        // Reset calculator
+        function resetCalculator() {
+            document.getElementById('calculatorForm').reset();
+            selectedCountries = [];
+            document.querySelectorAll('.supply-tag').forEach(tag => tag.remove());
+            document.getElementById('emptyState').style.display = 'flex';
+            document.getElementById('resultsContainer').classList.remove('show');
+            
+            document.querySelectorAll('.scope-option').forEach(option => {
+                option.classList.add('selected');
+                option.querySelector('input').checked = true;
+            });
+        }
+
+        // Export results
+        function exportResults() {
+            alert('📊 CSRD-compliant report generated!\n\nDownloading: carbon_footprint_report.pdf');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.supply-chain-input')) {
+                const dropdowns = document.querySelectorAll('.dropdown-menu');
+                dropdowns.forEach(d => d.remove());
+            }
+        });
+    </script>
+</body>
+</html>
